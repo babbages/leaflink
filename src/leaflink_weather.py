@@ -4,7 +4,7 @@ import time, requests
 LAT = 35.996653
 LON = -78.9018053
 DO_PIN = 19
-API_KEY = '5023fb07d222fcca1dfe21b2673d64c8'
+API_KEY = ''
 
 def get_weather():
     weather_url = f'https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}'
