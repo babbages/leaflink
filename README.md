@@ -17,7 +17,7 @@ Built using a Raspberry Pi 4b, with an ADS1115 analog to digital converter for t
 - LED Lights
 - Speaker
 
-## Sofware
+## Software
 - Custom python files found in this repo
 - Langchain agents
 - GPT-4
