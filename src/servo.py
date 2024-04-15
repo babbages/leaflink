@@ -1,7 +1,10 @@
+from gpiozero.pins.pigpio import PiGPIOFactory
 from gpiozero import Servo
 from time import sleep
 
-servo = Servo(21)
+factory = PiGPIOFactory()
+servo = Servo(21, pin_factory=factory)
+
 
 def orient_motor():
     servo.min()
