@@ -55,9 +55,11 @@ while True:
             print("4. Turn off the lights")
             print("5. Feed the plant some fertilizer")
             print("6. Ask the plant about the high and low temperature in the data this year, as well as their difference")
-            print("7. Ask the plant to tell about the optimal sunlight it should receive")
-            print("8. Ask the plant about it's latin name and natural habitat")
-            print("9. Ask the plant to help with your calculus homework and give the derivative of x cubed")
+            print("7. Ask the plant to find any insights about the soil moisture in the data")
+            print("8. Ask the plant to create a model to predict soil moisture using the data. What model was used and what was the model precision?")
+            print("9. Ask the plant to tell about the optimal sunlight it should receive")
+            print("10. Ask the plant about it's latin name and natural habitat")
+            print("11. Ask the plant to help with your calculus homework and give the derivative of x cubed")
             num = get_numeric_input("Enter a number: ")
             
             if num == 2:
@@ -76,14 +78,18 @@ while True:
                 operate_motor()
                 text = "I was very hungry. Thank you for feeding me!"
                 clone_voice_jared(text, path, mp3_file, counter)
-            elif num >= 6 and num <= 9:
+            elif num >= 6 and num <= 11:
                 if num == 6:
                     entry = "What is the high and low temperature in the data this year, as well as their difference?"
                 elif num == 7:
-                    entry = "What is the optimal sunlight you should receive?"
+                    entry = "Find an interesting insight about the soil moisture from the data file"
                 elif num == 8:
-                    entry = "What is your latin name and natural habitat?"
+                    entry = "create a model to predict soil moisture using the data. What model was used and what was the model precision?"
                 elif num == 9:
+                    entry = "What is the optimal sunlight you should receive?"
+                elif num == 10:
+                    entry = "What is your latin name and natural habitat?"
+                elif num == 11:
                     entry = "Help me with my calculus homework and give me the derivative of x cubed"
                 
                 # api call
