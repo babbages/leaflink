@@ -18,8 +18,9 @@ def voice_to_text():
     with sr.Microphone() as source:
         speech.adjust_for_ambient_noise(source)
         print("Say something...")
+        
         try:
-            audio = speech.listen(source)
+            audio = speech.listen(source, timeout=5)
             text = speech.recognize_google(audio)
             print("You said:", text)
             print("Done listening")
