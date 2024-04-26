@@ -13,11 +13,7 @@ def operate_motor():
     servo.min()
     sleep(1)
     servo.mid()
-    sleep(1)
-    servo.max()
-    sleep(1)
-    # servo.mid()
-    sleep(1)
+    sleep(3)
     servo.min()
     
 if __name__ == "__main__":
