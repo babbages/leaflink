@@ -12,6 +12,8 @@ from src.pump import *
 from src.sp_to_text import *
 from src.espeak import *
 from src.voice_clone import *
+from src.numeric_input import *
+import requests
 
 # temp/humid setup sensor
 dht_device = adafruit_dht.DHT11(board.D26)
@@ -28,6 +30,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(light_pin, GPIO.IN)
 GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+url = "https://suneeln-duke-leaflink-ask.hf.space/ask"
+
+path = "/home/aipi/Desktop/leaflink/sounds/"
+mp3_file = "output"
+counter = str(1)
+
 orient_motor()
 
 
@@ -37,34 +45,114 @@ while True:
     button_state = GPIO.input(button_pin)
     try:
         if button_state == GPIO.LOW:
-            print("Button pressed")
-            voice_to_text()
+            print("Button pressed\n\n")
             
-            text = "Suneel, your love life so terrible that even AI girlfriends will not date you."
-            path = "/home/aipi/Desktop/leaflink/sounds/"
-            mp3_file = "output"
-            counter = str(1)
-            # clone_voice_jared(text, path, mp3_file, counter)
+            # options for when room is too loud
+            print("Press one of the following on keyboard:")
+            print("1. Speak to the plant")
+            print("2. Water the plant")
+            print("3. Give the plant light (only at the end of the demonstration)")
+            print("4. Turn off the lights")
+            print("5. Feed the plant some fertilizer")
+            print("6. Ask the plant about the high and low temperature in the data this year, as well as their difference")
+            print("7. Ask the plant to tell about the optimal sunlight it should receive")
+            print("8. Ask the plant about it's latin name and natural habitat")
+            print("9. Ask the plant to help with your calculus homework and give the derivative of x cubed")
+            num = get_numeric_input("Enter a number: ")
             
-            classification_1 = "plant action"
-            if classification_1 == "plant action":
-                classify_2 = 4
-                if classify_2 == 1: # fertilizer
-                    operate_motor()
-                    text = "I was very hungry. Thank you for feeding me!"
+            if num == 2:
+                pump_water()
+                text = "That drink hit the spot. Thank you!"
+                clone_voice_jared(text, path, mp3_file, counter)
+            elif num == 3:
+                lights_on()
+                text = "I can finally see! Thank you for the wonderful light!"
+                clone_voice_jared(text, path, mp3_file, counter)
+            elif num == 4:
+                lights_off()
+                text = "Who turned the lights off? I don't like the dark!"
+                clone_voice_jared(text, path, mp3_file, counter)
+            elif num == 5:
+                operate_motor()
+                text = "I was very hungry. Thank you for feeding me!"
+                clone_voice_jared(text, path, mp3_file, counter)
+            elif num >= 6 and num <= 9:
+                if num == 6:
+                    entry = "What is the high and low temperature in the data this year, as well as their difference?"
+                elif num == 7:
+                    entry = "What is the optimal sunlight you should receive?"
+                elif num == 8:
+                    entry = "What is your latin name and natural habitat?"
+                elif num == 9:
+                    entry = "Help me with my calculus homework and give me the derivative of x cubed"
+                
+                # api call
+                resp = requests.post(
+                    url, params = {
+                        "question": entry
+                    }
+                )
+                
+                # print api call response
+                print(resp.json())
+            
+                if resp.status_code == 200:
+                    resp = resp.json()
+                else:
+                    resp = "Error"
+                
+                # respond
+                if resp['category_number'] > 1:
+                    text = resp['response']
+                    
                     clone_voice_jared(text, path, mp3_file, counter)
-                elif classify_2 == 2: # turn lights on
-                    lights_on()
-                    text = "I can finally see! Thank you for the wonderful light!"
+                
+            elif num == 1:    
+                # speech in
+                speech = voice_to_text()
+                
+                # api call
+                resp = requests.post(
+                    url, params = {
+                        "question": speech
+                    }
+                )
+                
+                # print api call response
+                print(resp.json())
+                
+                if resp.status_code == 200:
+                    resp = resp.json()
+                else:
+                    resp = "Error"
+                
+                # respond
+                if resp['category_number'] > 1:
+                    text = resp['response']
+                    
                     clone_voice_jared(text, path, mp3_file, counter)
-                elif classify_2 == 3: # turn lights off
-                    lights_off()
-                    text = "Who turned the lights off? I don't like the dark!"
-                    clone_voice_jared(text, path, mp3_file, counter)
-                elif classify_2 == 4:
-                    pump_water()
-                    text = "That drink hit the spot. Thank you!"
-                    clone_voice_jared(text, path, mp3_file, counter)
+                else:
+                    plant_category = resp['plant_category']
+                    
+                    if plant_category == 0: # fertilizer
+                        operate_motor()
+                        text = "I was very hungry. Thank you for feeding me!"
+                        clone_voice_jared(text, path, mp3_file, counter)
+                        
+                    elif plant_category == 1: # turn lights on
+                        lights_on()
+                        text = "I can finally see! Thank you for the wonderful light!"
+                        clone_voice_jared(text, path, mp3_file, counter)
+                    
+                    elif plant_category == 2: # turn lights off
+                        lights_off()
+                        text = "Who turned the lights off? I don't like the dark!"
+                        clone_voice_jared(text, path, mp3_file, counter)
+                    
+                    elif plant_category == 3:
+                        pump_water()
+                        text = "That drink hit the spot. Thank you!"
+                        clone_voice_jared(text, path, mp3_file, counter)
                     
     except:
         pass
@@ -170,3 +258,4 @@ while True:
             finally:
                 print("")
                 time.sleep(1)
+
