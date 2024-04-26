@@ -84,7 +84,7 @@ while True:
                 elif num == 7:
                     entry = "Find an interesting insight about the soil moisture from the data file"
                 elif num == 8:
-                    entry = "create a model to predict soil moisture using the data. What model was used and what was the model precision?"
+                    entry = "Create a model to predict soil moisture using the data. What model was used and what was the model's mean squared error?"
                 elif num == 9:
                     entry = "What is the optimal sunlight you should receive?"
                 elif num == 10:
@@ -264,4 +264,3 @@ while True:
             finally:
                 print("")
                 time.sleep(1)
-
